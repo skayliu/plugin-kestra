@@ -42,6 +42,7 @@ public abstract class AbstractKestraTask extends Task {
             Optional<String> maybePassword = runContext.render(auth.password).as(String.class);
             if (maybeUsername.isPresent() && maybePassword.isPresent()) {
                 builder.basicAuth(maybeUsername.get(), maybePassword.get());
+                return builder.build();
             }
 
             if (maybeUsername.isPresent() || maybePassword.isPresent()) {

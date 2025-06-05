@@ -2,19 +2,36 @@ package io.kestra.plugin.kestra.flows;
 
 import io.kestra.api.sdk.KestraClient;
 import io.kestra.api.sdk.model.IdWithNamespace;
+import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.RunnableTask;
 import io.kestra.core.runners.RunContext;
 import io.kestra.plugin.kestra.AbstractKestraTask;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
+@SuperBuilder
+@ToString
+@EqualsAndHashCode
+@Getter
+@NoArgsConstructor
+@Schema(
+    title = "Export Kestra flows"
+)
+@Plugin(
+    examples = {
+        @io.kestra.core.models.annotations.Example(
+            title = "Simple revert",
+            code = { "format: \"Text to be reverted\"" }
+        )
+    }
+)
 public class Export extends AbstractKestraTask implements RunnableTask<Export.Output> {
     @Schema(title = "The namespace to list flows on, if null, will default to the namespace of the current flow.")
     public Property<List<IdWithNamespace>> idsWithNamespace;
