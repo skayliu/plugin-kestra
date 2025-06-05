@@ -23,6 +23,10 @@ public abstract class AbstractKestraTask extends Task {
     @Schema(title = "Authentication information.")
     private Auth auth;
 
+    @Schema(title = "The tenant ID to use for the request, defaults to 'main'.")
+    @Builder.Default
+    protected Property<String> tenantId = Property.ofValue("main");
+
     protected KestraClient kestraClient(RunContext runContext) throws IllegalVariableEvaluationException {
         String rKestraUrl = runContext.render(kestraUrl).as(String.class).orElse("http://localhost:8080");
         var builder = KestraClient.builder();

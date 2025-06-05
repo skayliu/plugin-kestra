@@ -1,7 +1,6 @@
-package io.kestra.plugin.kestra.flow;
+package io.kestra.plugin.kestra.namespaces;
 
 import io.kestra.api.sdk.KestraClient;
-import io.kestra.api.sdk.model.Flow;
 import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.RunnableTask;
@@ -28,23 +27,25 @@ import lombok.experimental.SuperBuilder;
     }
 )
 public class List extends AbstractKestraTask implements RunnableTask<List.Output> {
-    @Schema(title = "The namespace to list flows on, if null, will default to the namespace of the current flow.")
-    private Property<String> namespace;
+    @Schema(title = "The namespace prefix, if null, all namespaces will be listed.")
+    private Property<String> prefix;
 
     @Override
     public List.Output run(RunContext runContext) throws Exception {
-        String ns = runContext.render(namespace).as(String.class).orElseGet(() -> runContext.flowInfo().namespace());
+        String ns = runContext.render(prefix).as(String.class).orElse("");
+        String tId = runContext.render(tenantId).as(String.class).orElse("main");
+
 
         KestraClient kestraClient = kestraClient(runContext);
-        java.util.List<Flow> flows = kestraClient.flows().getFlowsByNamespace3(ns, runContext.flowInfo().tenantId());
+        java.util.List<String> results = kestraClient.flows().listDistinctNamespaces(tId, ns);
         return Output.builder()
-            .flows(flows)
+            .namespaces(results)
             .build();
     }
 
     @Builder
     @Getter
     public static class Output implements io.kestra.core.models.tasks.Output {
-        private java.util.List<Flow> flows;
+        private java.util.List<String> namespaces;
     }
 }
