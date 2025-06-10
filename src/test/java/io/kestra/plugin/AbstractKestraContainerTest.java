@@ -1,8 +1,8 @@
 package io.kestra.plugin;
 
-import io.kestra.api.sdk.KestraClient;
-import io.kestra.api.sdk.internal.ApiException;
-import io.kestra.api.sdk.model.Tenant;
+import io.kestra.sdk.KestraClient;
+import io.kestra.sdk.internal.ApiException;
+import io.kestra.sdk.model.Tenant;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.GenericContainer;

@@ -1,7 +1,7 @@
 package io.kestra.plugin.kestra.flows;
 
-import io.kestra.api.sdk.KestraClient;
-import io.kestra.api.sdk.model.Flow;
+import io.kestra.sdk.KestraClient;
+import io.kestra.sdk.model.Flow;
 import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.RunnableTask;

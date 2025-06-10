@@ -1,6 +1,6 @@
 package io.kestra.plugin.kestra;
 
-import io.kestra.api.sdk.KestraClient;
+import io.kestra.sdk.KestraClient;
 import io.kestra.core.exceptions.IllegalVariableEvaluationException;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.Task;

@@ -1,7 +1,7 @@
 package io.kestra.plugin.flows;
 
-import io.kestra.api.sdk.model.FlowWithSource;
-import io.kestra.api.sdk.model.IdWithNamespace;
+import io.kestra.sdk.model.FlowWithSource;
+import io.kestra.sdk.model.IdWithNamespace;
 import io.kestra.core.junit.annotations.KestraTest;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.runners.RunContext;

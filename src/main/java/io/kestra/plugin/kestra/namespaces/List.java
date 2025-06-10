@@ -1,13 +1,12 @@
 package io.kestra.plugin.kestra.namespaces;
 
-import io.kestra.api.sdk.KestraClient;
-import io.kestra.api.sdk.model.PagedResultsNamespaceWithDisabled;
+import io.kestra.sdk.KestraClient;
+import io.kestra.sdk.model.PagedResultsNamespaceWithDisabled;
 import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.RunnableTask;
 import io.kestra.core.runners.RunContext;
 import io.kestra.plugin.kestra.AbstractKestraTask;
-import io.kestra.plugin.kestra.flows.DistinctNamespaces;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
 import lombok.*;

@@ -1,8 +1,8 @@
 package io.kestra.plugin;
 
-import io.kestra.api.sdk.KestraClient;
-import io.kestra.api.sdk.internal.ApiException;
-import io.kestra.api.sdk.model.*;
+import io.kestra.sdk.KestraClient;
+import io.kestra.sdk.internal.ApiException;
+import io.kestra.sdk.model.*;
 import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j; // Added for logging
