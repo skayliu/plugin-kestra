@@ -61,8 +61,6 @@ jobs:
           password: ${{ github.token }}
 
       - name: Build the docker-compose stack
-        env:
-          APPLICATION_SECRETS: ${{ secrets.APPLICATION_SECRETS }}
         run: |
           docker pull ghcr.io/kestra-io/kestra-ee:develop
 
