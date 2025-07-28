@@ -32,34 +32,6 @@ public class KestraTestDataUtils {
         log.debug("KestraSDKHelper initialized with URL: {} and tenant ID: {}", kestraUrl, tenantId);
     }
 
-    private Role createRandomizedRole() throws ApiException {
-        RolePermissions permissions = new RolePermissions()
-            .addFLOWItem(String.valueOf(Action.CREATE));
-
-        String name = "Role-" + random.nextInt(10000);
-        Role role = new Role()
-            .name(name)
-            .permissions(permissions);
-
-        return kestraClient.roles().createRole(tenantId, role);
-    }
-
-    public Group createRandomizedGroup() throws ApiException {
-        String name = "Group-" + random.nextInt(10000);
-        AbstractGroupControllerGroupWithMembers group = new AbstractGroupControllerGroupWithMembers()
-            .name(name);
-
-        return kestraClient.groups().createGroup(tenantId, group);
-    }
-
-    public AbstractBindingControllerBindingDetail createGroupBinding(String groupId, String roleId) throws ApiException {
-        Binding binding = new Binding()
-            .type(BindingType.GROUP)
-            .externalId(groupId)
-            .roleId(roleId);
-
-        return kestraClient.bindings().createBinding(tenantId, binding);
-    }
 
     public FlowWithSource createRandomizedFlow(@Nullable String namespace) throws ApiException {
         String np = namespace != null ? namespace : "default";
@@ -77,12 +49,22 @@ public class KestraTestDataUtils {
         return kestraClient.flows().createFlow(tenantId, flow);
     }
 
-    public Invitation createRandomizedInvitation(@Nullable String email) throws ApiException {
 
-        return kestraClient.invitations().createInvitation(
-            tenantId,
-            new Invitation().email(email != null ? email : "random" + random.nextInt(1000000) + "@random.com") // Increased range for email
-        );
+    public FlowWithSource createRandomizedFlowWithLabel(@Nullable String namespace) throws ApiException {
+        String np = namespace != null ? namespace : "default";
+        String flow =
+            """
+                id: random_flow_%s
+                namespace: %s
+                labels:
+                  - key: value
+                tasks:
+                  - id: hello
+                    type: io.kestra.plugin.core.log.Log
+                    message: Hello from KestraSDKHelper! 🚀
+                """.formatted(UUID.randomUUID().toString().substring(0, 8).replace("-", "_"), np);
+
+        return kestraClient.flows().createFlow(tenantId, flow);
     }
 
     public Namespace createRandomizedNamespace(@Nullable String namespaceId) throws ApiException {
