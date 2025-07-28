@@ -83,4 +83,30 @@ public class KestraTestDataUtils {
         );
     }
 
+    /**
+     * Creates a randomized execution for a given flow ID and namespace.
+     * If the namespace is null, it defaults to "default".
+     * This method always throws an ApiException because the result can not be parsed, so its only used
+     * for testing the Query executions task.
+     *
+     * @param flowId    The ID of the flow to trigger.
+     * @param namespace The namespace in which to trigger the execution, or null for default.
+     * @throws ApiException If there is an error triggering the execution.
+     */
+    public void createRandomizedExecution(String flowId, @Nullable String namespace) throws ApiException {
+        String np = namespace != null ? namespace : NAMESPACE;
+        try {
+            kestraClient.executions().triggerExecution(
+                np,
+                flowId,
+                false,
+                tenantId,
+                null,
+                null
+            );
+        } catch (ApiException e) {
+            log.error("ApiException thrown, probably false positive as we are in `createRandomizedExecution` :" + e.getMessage());
+        }
+    }
+
 }
