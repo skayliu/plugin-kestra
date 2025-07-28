@@ -7,6 +7,7 @@ import io.kestra.core.models.tasks.RunnableTask;
 import io.kestra.core.runners.RunContext;
 import io.kestra.plugin.kestra.AbstractKestraTask;
 import io.kestra.sdk.KestraClient;
+import io.kestra.sdk.model.IdWithNamespace;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -23,7 +24,7 @@ import java.util.List;
 @NoArgsConstructor
 @Schema(
     title = "Export Kestra flows",
-    description = "Exports one or more Kestra flows as a ZIP archive. You can specify from a namespace prefix and/or labels to filter the flows to export. "
+    description = "Exports one or more Kestra flows as a ZIP archive. You can specify flows by their ID and namespace."
 )
 @Plugin(
     examples = {
@@ -36,39 +37,54 @@ import java.util.List;
 
                 tasks:
                   - id: export_flow
-                    type: io.kestra.plugin.kestra.flows.Export
+                    type: io.kestra.plugin.kestra.flows.ExportById
                     kestraUrl: http://localhost:8080
                     auth:
                       username: admin
                       password: password
-                    namespace: company.team
+                    flows:
+                      - id: my_flow_id
+                        namespace: my.flow.namespace
+                """
+        ),
+        @Example(
+            title = "Export multiple flows from different namespaces",
+            full = true,
+            code = """
+                id: export_multiple_flows
+                namespace: company.team
+
+                tasks:
+                  - id: export_flows
+                    type: io.kestra.plugin.kestra.flows.ExportById
+                    kestraUrl: https://my-ee-instance.io
+                    auth:
+                      username: myuser
+                      password: mypassword
+                    tenantId: mytenant
+                    flows:
+                      - id: flow_one
+                        namespace: prod.data
+                      - id: flow_two
+                        namespace: dev.analytics
+                      - id: flow_three
+                        namespace: common.utils
                 """
         )
     }
 )
-public class Export extends AbstractKestraTask implements RunnableTask<Export.Output> {
+public class ExportById extends AbstractKestraTask implements RunnableTask<ExportById.Output> {
 
-    @Schema(title = "A namespace prefix filter.")
-    public Property<String> namespace;
-
-    @Schema(title = "A list of label with the format `key:value`")
-    public Property<List<String>> labels;
+    @Schema(title = "The flows to export.")
+    public Property<List<IdWithNamespace>> flows;
 
     @Override
-    public Export.Output run(RunContext runContext) throws Exception {
+    public ExportById.Output run(RunContext runContext) throws Exception {
         String tId = runContext.render(tenantId).as(String.class).orElse(runContext.flowInfo().tenantId());
-        String rNamespace = runContext.render(namespace).as(String.class).orElse(null);
-        List<String> rLabels = runContext.render(labels).asList(String.class);
+        List<IdWithNamespace> ids = runContext.render(flows).asList(IdWithNamespace.class);
 
         KestraClient kestraClient = kestraClient(runContext);
-        byte[] zipBytes = kestraClient.flows().exportFlowsByQuery(
-            tId,
-            null,
-            null,
-            null,
-            rNamespace,
-            rLabels
-        );
+        byte[] zipBytes = kestraClient.flows().exportFlowsByIds(tId, ids);
 
 
         InputStream inputStream = new ByteArrayInputStream(zipBytes);
@@ -76,7 +92,7 @@ public class Export extends AbstractKestraTask implements RunnableTask<Export.Ou
         URI storedFileUri = runContext.storage().putFile(inputStream, fileName);
 
 
-        return Export.Output.builder()
+        return ExportById.Output.builder()
             .flowsZip(storedFileUri)
             .build();
     }
